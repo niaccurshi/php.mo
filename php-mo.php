@@ -76,7 +76,9 @@ function phpmo_parse_po_file($in) {
 		if ($line === '')
 			continue;
 
-		list ($key, $data) = preg_split('/\s/', $line, 2);
+		$pairs = preg_split('/\s/', $line, 2);
+		if (count($pairs) === 1) $pairs[] = '';
+		list ($key, $data) = $pairs; 
 		
 		switch ($key) {
 			case '#,' : // flag...
