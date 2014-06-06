@@ -15,7 +15,7 @@
  * More info:
  * https://github.com/josscrowcroft/php.mo
  * 
- * Based on php-msgfmt by Matthias Bauer (Copyright © 2007), a command-line PHP tool
+ * Based on php-msgfmt by Matthias Bauer (Copyright ï¿½ 2007), a command-line PHP tool
  * for converting .po files to .mo.
  * (http://wordpress-soc-2007.googlecode.com/svn/trunk/moeffju/php-msgfmt/msgfmt.php)
  * 
@@ -98,6 +98,7 @@ function phpmo_parse_po_file($in) {
 				// context
 			case 'msgid' :
 				// untranslated-string
+				$last_msgid = $data;
 			case 'msgid_plural' :
 				// untranslated-string-plural
 				$state = $key;
@@ -106,7 +107,10 @@ function phpmo_parse_po_file($in) {
 			case 'msgstr' :
 				// translated-string
 				$state = 'msgstr';
-				$temp[$state][] = $data;
+				if(trim($data) == "\"\""){
+					$temp[$state][] = $last_msgid;
+				} else
+					$temp[$state][] = $data;
 				break;
 			default :
 				if (strpos($key, 'msgstr[') !== FALSE) {
@@ -150,6 +154,7 @@ function phpmo_parse_po_file($in) {
 				return FALSE;
 			}
 		}
+		if ($entry['msgid'] === "") $entry['msgid'] = ' ';
 		$hash[$entry['msgid']] = $entry;
 	}
 
